@@ -98,3 +98,12 @@ body{
     font-size: 14px;
     font-weight: 500;
 }
+.array-item-pair{
+    display: flex;
+    gap:5px;
+    margin: 5px 0;
+}
+.array-item-pair,
+.array-value{
+    width: max-content;
+}

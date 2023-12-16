@@ -1,12 +1,9 @@
 import findLast from "lodash/findLast";
 import JsonWrapper from "../JsonWrapper";
-import { areEqual } from "../../helpers/common";
+import { areEqual, getValueType } from "../../helpers/common";
+import ArrayWrapper from "../ArrayWrapper";
 
-function getValueType(obj: any) {
-  if (Array.isArray(obj)) return "Array";
-  if (typeof obj === "object" && obj !== null) return "Object";
-  return "String";
-}
+
 
 const JsonPair = (props: {
   basePath: string;
@@ -35,7 +32,6 @@ const JsonPair = (props: {
   const newValueType = getValueType(currentPatch?.value);
   const isSameValue = areEqual(value, currentPatch?.value);
 
-  console.log({currentPatch})
   return (
     <div className={`json-pair`}>
       <span
@@ -90,10 +86,21 @@ const JsonPair = (props: {
             updateJsonData={updateJsonData}
             markPatchAsCancelled={markPatchAsCancelled}
           />
-        ) : (
+        ) : 
+        currentValueType === "Array"? 
+          <ArrayWrapper 
+            array={value} 
+            jsonPatch={jsonPatch} 
+            level={level + 1}
+            path={`${basePath}/${keyName}`}
+            updateJsonData={updateJsonData}
+            markPatchAsCancelled={markPatchAsCancelled}
+          />
+           : ( 
           <span>{JSON.stringify(value)}</span>
         )}
       </div>
+
       {!newPair &&
         currentPatch?.op === "replace" &&
         !currentPatch?.cancelled &&

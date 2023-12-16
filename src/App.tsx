@@ -12,7 +12,8 @@ function App() {
     contact: {
       email: "johndoe@gmail.com",
       phone: "8899008899"
-    }
+    },
+    interests: ["Dancing", "Painting"]
   };
 
   const jsonPatch = [
@@ -24,6 +25,11 @@ function App() {
     {
       op: "delete",
       path: "/contact/phone"
+    },
+    {
+      op: "add",
+      path: "/interests/5",
+      value: "Swimming"
     }
   ];
   const [jsonData, setJsonData] = useState<any>(json);
@@ -34,8 +40,6 @@ function App() {
   );
 
   const handleTextAreaChange = (event: any) => {
-    // const newJsonString = event.target.value;
-    console.log({event})
     setJsonString(event);
   };
 
@@ -55,8 +59,8 @@ function App() {
   }
 
   const updateJsonData = (patch?: any) => {
+    console.log({ patch });
     const newJsonData: any = applyPatch(jsonData, patch);
-    console.log({ patch, newJsonData });
     setJsonData((prev: any) => ({ ...newJsonData }));
   };
 

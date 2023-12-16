@@ -1,3 +1,4 @@
+import { checkIfPathIsArray, getValueType } from "../../helpers/common";
 import JsonPair from "../JsonPair";
 
 function countSlashes(path: string) {
@@ -23,7 +24,10 @@ const JsonWrapper = (props: {
   const keys = Object.keys(json);
   const keysToAdd = jsonPatch
     .filter(
-      (patch: any) => countSlashes(patch.path) === level && patch.op === "add" && !patch.cancelled,
+      (patch: any) => {
+        const isPathAnArray = checkIfPathIsArray(patch?.path);
+        return countSlashes(patch.path) === level && patch.op === "add" && !patch.cancelled && !isPathAnArray
+      },
     )
     .map((patch: any) => {
       const dir = patch.path.split("/");
@@ -63,8 +67,8 @@ const JsonWrapper = (props: {
             />
             );
         })}
-        <span className="enclosing-bracket">{"}"}</span>
       </div>
+        <span className="enclosing-bracket">{"}"}</span>
     </div>
   );
 };

@@ -5,55 +5,95 @@ export const areEqual = (lhs:any, rhs:any) => {
 }
 
 export const applyPatch = (originalObject:any, patch?:any) =>  {
+  if (!patch) return originalObject;
 
-    if(!patch) return originalObject;
+  const { op, path, value } = patch;
 
-    const { op, path, value } = patch;
+  // Helper function to traverse the object and update the value at the specified path
+  const updateValueAtPath = (obj: any, pathSegments: any, newValue: any) => {
+    let currentObj = obj;
+    for (let i = 0; i < pathSegments.length - 1; i++) {
+      const segment = pathSegments[i];
   
-    // Helper function to traverse the object and update the value at the specified path
-    const updateValueAtPath = (obj:any, pathSegments:any, newValue:any) => {
-      let currentObj = obj;
-      for (let i = 0; i < pathSegments.length - 1; i++) {
-        currentObj = currentObj[pathSegments[i]];
+      if (Array.isArray(currentObj[segment]) && !Number.isNaN(Number(pathSegments[i + 1]))) {
+        // If the current segment is an array and the next segment is a number, update the array element
+        const index = Number(pathSegments[i + 1]);
+        if (currentObj[segment][index] !== undefined) {
+          // If the index exists in the array, update the element
+          currentObj = currentObj[segment];
+        } else {
+          // If the index is not found in the array, append the value at the end
+          currentObj[segment].push(newValue);
+          return;
+        }
+      } else {
+        // If the current segment is not an array, create an empty array and update the value
+        if (!currentObj[segment]) {
+          currentObj[segment] = [];
+        }
+        currentObj = currentObj[segment];
       }
-      currentObj[pathSegments[pathSegments.length - 1]] = newValue;
-    };
-  
-    // Helper function to delete a property at the specified path
-    const deleteValueAtPath = (obj:any, pathSegments:any) => {
-      let currentObj = obj;
-      for (let i = 0; i < pathSegments.length - 1; i++) {
-        currentObj = currentObj[pathSegments[i]];
-      }
-      delete currentObj[pathSegments[pathSegments.length - 1]];
-      console.log({currentObj})
-    };
-  
-    const pathSegments = path.split('/').filter((segment:any) => segment !== '');
-  
-    switch (op) {
-      case 'replace':
-      case 'add':
-        updateValueAtPath(originalObject, pathSegments, value);
-        break;
-  
-    
-        // // For simplicity, assuming that the property to be added is the last segment in the path
-        // console.log({pathSegments, originalObject})
-        // const newProperty = pathSegments[pathSegments.length - 1];
-        // originalObject[newProperty as any] = value;
-        // break;
-  
-      case 'delete':
-        console.log("in delete case")
-        deleteValueAtPath(originalObject, pathSegments);
-        break;
-  
-      default:
-        throw new Error('Invalid operation');
     }
   
-    return originalObject;
+    // If the last segment is an array and the path ends with an index, update the array element
+    const lastSegment = pathSegments[pathSegments.length - 1];
+    if (Array.isArray(currentObj[lastSegment]) && !Number.isNaN(Number(lastSegment))) {
+      const index = Number(lastSegment);
+      if (currentObj[lastSegment][index] !== undefined) {
+        currentObj[lastSegment][index] = newValue;
+      } else {
+        // If the index is not found in the array, append the value at the end
+        currentObj[lastSegment].push(newValue);
+      }
+    } else {
+      // Otherwise, update the value at the specified path
+      currentObj[lastSegment] = newValue;
+    }
+  };
+
+  // Helper function to delete a property at the specified path
+  const deleteValueAtPath = (obj: any, pathSegments: any) => {
+    let currentObj = obj;
+    for (let i = 0; i < pathSegments.length - 1; i++) {
+      const segment = pathSegments[i];
+
+      if (Array.isArray(currentObj[segment]) && !Number.isNaN(Number(pathSegments[i + 1]))) {
+        // If the current segment is an array and the next segment is a number
+        const index = Number(pathSegments[i + 1]);
+        if (currentObj[segment][index] !== undefined) {
+          // If the index exists in the array, remove the element
+          currentObj[segment].splice(index, 1);
+          return;
+        } else {
+          // Handle the case when the index is not found in the array
+          console.warn(`Index ${index} not found in array. No deletion performed.`);
+          return;
+        }
+      }
+
+      currentObj = currentObj[segment];
+    }
+    delete currentObj[pathSegments[pathSegments.length - 1]];
+  };
+
+  const pathSegments = path.split('/').filter((segment: any) => segment !== '');
+
+  switch (op) {
+    case 'replace':
+    case 'add':
+      updateValueAtPath(originalObject, pathSegments, value);
+      break;
+
+    case 'delete':
+      deleteValueAtPath(originalObject, pathSegments);
+      break;
+
+    default:
+      throw new Error('Invalid operation');
+  }
+
+  console.log({originalObject})
+  return originalObject;
   }
 
  export const isValidInput = (input:any) => {
@@ -102,3 +142,24 @@ export const applyPatch = (originalObject:any, patch?:any) =>  {
   // If all checks pass, there is no error
   return "";
   }
+
+  export const getValueType = (obj: any) => {
+    if (Array.isArray(obj)) return "Array";
+    if (typeof obj === "object" && obj !== null) return "Object";
+    return "String";
+  }
+
+  export function applyPatchToArray(originalArray:any, patchArray:any) {
+    const resultArray = [...originalArray];
+  
+    patchArray.forEach(({ index, value }:any) => {
+      resultArray.splice(index, 0, value);
+    });
+  
+    return resultArray;
+  }
+
+  export const checkIfPathIsArray = (path:string) => {
+    const regex = /\/\d+$/;
+    return regex.test(path);
+  } 
