@@ -1,25 +1,22 @@
+import { useContext } from "react";
 import ArrayWrapper from "../ArrayWrapper";
 import JsonWrapper from "../JsonWrapper";
 
-const ValueWrapper = (props: {valueType: string, value:any, path:string, level:number, jsonPatch:any, updateJsonData:any, markPatchAsCancelled:any}) => {
-    const {valueType, value, path, level,jsonPatch, updateJsonData, markPatchAsCancelled} = props;
+const ValueWrapper = (props: {valueType: string, value:any, path:string, level:number}) => {
+    const {valueType, value, path, level} = props;
+
     return  valueType === "Object"? 
     <JsonWrapper 
-      json={value} 
-      jsonPatch={jsonPatch} 
+      json={value}
       path={path} 
       level={level + 1} 
-      updateJsonData={updateJsonData} 
-      markPatchAsCancelled={markPatchAsCancelled} 
       /> :
       valueType === "Array"? 
     <ArrayWrapper 
-      array={value} 
-      jsonPatch={jsonPatch} 
+      array={value}
       path={path} 
       level={level + 1} 
-      updateJsonData={updateJsonData} 
-      markPatchAsCancelled={markPatchAsCancelled} />:
+      />:
     
     <>"{value}"</>
   }

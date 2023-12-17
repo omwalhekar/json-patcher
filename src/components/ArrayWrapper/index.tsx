@@ -2,6 +2,8 @@ import { find, findLast } from "lodash";
 import { applyPatchToArray, areEqual, getValueType } from "../../helpers/common";
 import TestTag from "../TestTag";
 import ValueWrapper from "../ValueWrapper";
+import { useContext } from "react";
+import DataContext from "../../context/DataContext";
 
 function countSlashes(path: string) {
   // Split the path string by "/"
@@ -15,14 +17,11 @@ function countSlashes(path: string) {
 
 const ArrayWrapper = (props: {
   array: any;
-  jsonPatch: any;
   path: string;
   level: number;
-  updateJsonData: (patch: any) => void;
-  markPatchAsCancelled: any;
 }) => {
-  const { array, jsonPatch, level, path, updateJsonData, markPatchAsCancelled } =
-    props;
+  const {jsonPatch, updateJsonData, markPatchAsCancelled} = useContext(DataContext);
+  const { array, level, path} = props;
  
   const regexPattern = new RegExp(`^${path}(?:\/\\d+)?$`);
   let itemsToAdd:any = [];
@@ -119,9 +118,6 @@ const ArrayPair = (props: {
                 value={arrayItemValue} 
                 path={path}
                 level={level + 1}
-                updateJsonData={updateJsonData}
-                jsonPatch={jsonPatch}
-                markPatchAsCancelled={markPatchAsCancelled}
               />   
         </div>
 
@@ -142,9 +138,6 @@ const ArrayPair = (props: {
                 value={currentPatch?.value} 
                 path={path}
                 level={level + 1}
-                updateJsonData={updateJsonData}
-                jsonPatch={jsonPatch}
-                markPatchAsCancelled={markPatchAsCancelled}
               />
             </div>
         }

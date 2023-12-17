@@ -83,9 +83,6 @@ const JsonPair = (props: {
                 value={value} 
                 path={`${basePath}/${keyName}`}
                 level={level + 1}
-                updateJsonData={updateJsonData}
-                jsonPatch={jsonPatch}
-                markPatchAsCancelled={markPatchAsCancelled}
               /> 
       </div>
 
@@ -107,9 +104,6 @@ const JsonPair = (props: {
                 value={currentPatch?.value} 
                 path={`${basePath}/${keyName}`}
                 level={level + 1}
-                updateJsonData={updateJsonData}
-                jsonPatch={jsonPatch}
-                markPatchAsCancelled={markPatchAsCancelled}
               /> 
           </span>
         )}

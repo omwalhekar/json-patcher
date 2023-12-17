@@ -1,9 +1,10 @@
 import { useState } from "react";
-import "./App.css";
 import JsonWrapper from "./components/JsonWrapper";
 import { applyPatch, isValidInput } from "./helpers/common";
 import set from "lodash/set";
 import { JsonInput, MantineProvider  } from '@mantine/core';
+import DataContext from "./context/DataContext";
+import "./App.css";
 
 function App() {
   const json = {
@@ -29,6 +30,11 @@ function App() {
       "op": "test",
       "path": "/slug",
       "value": "slug"
+    },
+    {
+      "op": "test",
+      "path": "/name",
+      "value": "Diya Foundation"
     },
     {
         "op": "replace",
@@ -162,6 +168,11 @@ function App() {
   };
 
   return (
+    <DataContext.Provider value={{
+      jsonPatch: patches,
+      updateJsonData,
+      markPatchAsCancelled
+    }}>
     <MantineProvider>
 
     <div className="App">
@@ -178,15 +189,13 @@ function App() {
       <div className="visualizer">
         <JsonWrapper
           json={jsonData}
-          jsonPatch={patches}
           path={""}
           level={1}
-          updateJsonData={updateJsonData}
-          markPatchAsCancelled={markPatchAsCancelled}
           />
       </div>
     </div>
           </MantineProvider>
+          </DataContext.Provider>
   );
 }
 

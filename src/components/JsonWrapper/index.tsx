@@ -1,5 +1,7 @@
+import { useContext } from "react";
 import { checkIfPathIsArray, getValueType } from "../../helpers/common";
 import JsonPair from "../JsonPair";
+import DataContext from "../../context/DataContext";
 
 function countSlashes(path: string) {
   // Split the path string by "/"
@@ -13,14 +15,11 @@ function countSlashes(path: string) {
 
 const JsonWrapper = (props: {
   json: any;
-  jsonPatch: any;
   path: string;
   level: number;
-  updateJsonData: (patch: any) => void;
-  markPatchAsCancelled: any;
 }) => {
-  const { json, jsonPatch, level, path, updateJsonData, markPatchAsCancelled } =
-    props;
+  const {jsonPatch, updateJsonData, markPatchAsCancelled} = useContext(DataContext);
+  const { json, level, path} = props;
   const keys = Object.keys(json);
   const keysToAdd = jsonPatch
     .filter(

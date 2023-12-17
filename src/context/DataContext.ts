@@ -1,10 +1,15 @@
 import { createContext } from 'react';
 
-const UserContext = createContext<any>({
-    json: {},
+interface IDataContext {
+    jsonPatch: any,
+    updateJsonData:any,
+    markPatchAsCancelled:any
+}
+
+const DataContext = createContext<IDataContext>({
     jsonPatch: {},
     updateJsonData: null,
-    setPatch:null
+    markPatchAsCancelled: null
 });
 
-export default UserContext;
+export default DataContext;
