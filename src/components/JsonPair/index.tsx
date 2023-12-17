@@ -38,6 +38,8 @@ const JsonPair = (props: {
         ${currentPatch?.op === "add"  && !currentPatch?.cancelled ? "to-be-added" : ""} 
         ${currentPatch?.op === "delete" ? "to-be-deleted" : ""}`}
         onClick={() => {
+         if(currentPatch?.op !== "test")
+         { 
           if (!isSameValue && currentPatch?.op === "delete") {
             updateJsonData(currentPatch);  
           } else {
@@ -45,6 +47,7 @@ const JsonPair = (props: {
           }
           markPatchAsCancelled(currentPatch);
         }}
+      }
       >
         "{keyName}" :
       </span>
@@ -67,7 +70,7 @@ const JsonPair = (props: {
                     : ""
                 }`}
         onClick={() => {
-          if (currentPatch) {
+          if (currentPatch && currentPatch?.op !== "test") {
             if (!isSameValue && ["replace"].includes(currentPatch?.op)) {
               updateJsonData();
             } else {
