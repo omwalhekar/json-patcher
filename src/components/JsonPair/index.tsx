@@ -31,68 +31,44 @@ const JsonPair = (props: {
   const isSameValue = areEqual(value, currentPatch?.value);
   const testPassed = isSameValue && currentPatch?.op === "test";
 
+  const isAddOperation = currentPatch?.op === "add" && !currentPatch?.cancelled;
+  const isDeleteOperation = currentPatch?.op === "delete";
+  const isReplaceOperation =
+    !isSameValue && !currentPatch?.cancelled && currentPatch?.op === "replace";
+
+  const handleUpdateAndCancel = () => {
+    if (currentPatch && currentPatch.op !== "test") {
+      updateJsonData(currentPatch);
+      markPatchAsCancelled(currentPatch);
+    }
+  };
+
   return (
-    <div className={`json-pair`}>
+    <div className="json-pair">
       <span
-        className={`json-key 
-        ${currentPatch?.op === "add"  && !currentPatch?.cancelled ? "to-be-added" : ""} 
-        ${currentPatch?.op === "delete" ? "to-be-deleted" : ""}`}
-        onClick={() => {
-         if(currentPatch?.op !== "test")
-         { 
-          if (!isSameValue && currentPatch?.op === "delete") {
-            updateJsonData(currentPatch);  
-          } else {
-            updateJsonData(currentPatch);
-          }
-          markPatchAsCancelled(currentPatch);
-        }}
-      }
+        className={`json-key ${isAddOperation ? "to-be-added" : ""} ${
+          isDeleteOperation ? "to-be-deleted" : ""
+        }`}
+        onClick={handleUpdateAndCancel}
       >
         "{keyName}" :
       </span>
 
       <div
-        className={`json-value ${
-          !isSameValue &&
-          !currentPatch?.cancelled &&
-          currentPatch?.op === "replace"
-            ? "to-be-replaced"
-            : ""
-        }
-       
-                ${currentPatch?.op === "add" && !currentPatch?.cancelled  ? "to-be-added" : ""} 
-                ${
-                  !isSameValue &&
-                  !currentPatch?.cancelled &&
-                  currentPatch?.op === "delete"
-                    ? "to-be-deleted"
-                    : ""
-                }`}
-        onClick={() => {
-          if (currentPatch && currentPatch?.op !== "test") {
-            if (!isSameValue && ["replace"].includes(currentPatch?.op)) {
-              updateJsonData();
-            } else {
-              updateJsonData(currentPatch);
-            }
-            markPatchAsCancelled(currentPatch);
-          }
-        }}
+        className={`json-value ${isReplaceOperation ? "to-be-replaced" : ""} ${
+          isAddOperation ? "to-be-added" : ""
+        } ${isDeleteOperation ? "to-be-deleted" : ""}`}
+        onClick={handleUpdateAndCancel}
       >
-      
-        <ValueWrapper 
-                valueType={currentValueType} 
-                value={value} 
-                path={`${basePath}/${keyName}`}
-                level={level + 1}
-              /> 
+        <ValueWrapper
+          valueType={currentValueType}
+          value={value}
+          path={`${basePath}/${keyName}`}
+          level={level + 1}
+        />
       </div>
 
-      
-      {
-         currentPatch?.op === "test" && <TestTag result={testPassed}/>
-      }
+      {testPassed && <TestTag result={testPassed} />}
 
       {!newPair &&
         currentPatch?.op === "replace" &&
@@ -102,12 +78,12 @@ const JsonPair = (props: {
             className="replaced-value"
             onClick={() => updateJsonData(currentPatch)}
           >
-             <ValueWrapper 
-                valueType={newValueType} 
-                value={currentPatch?.value} 
-                path={`${basePath}/${keyName}`}
-                level={level + 1}
-              /> 
+            <ValueWrapper
+              valueType={newValueType}
+              value={currentPatch?.value}
+              path={`${basePath}/${keyName}`}
+              level={level + 1}
+            />
           </span>
         )}
     </div>
