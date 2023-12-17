@@ -29,13 +29,14 @@ const JsonPair = (props: {
   const currentValueType = getValueType(value);
   const newValueType = getValueType(currentPatch?.value);
   const isSameValue = areEqual(value, currentPatch?.value);
-  const testPassed = isSameValue && currentPatch?.op === "test";
-
+ 
   const isAddOperation = currentPatch?.op === "add" && !currentPatch?.cancelled;
   const isDeleteOperation = currentPatch?.op === "delete";
+  const isTestOperation = currentPatch?.op === "test";
   const isReplaceOperation =
     !isSameValue && !currentPatch?.cancelled && currentPatch?.op === "replace";
 
+  const testPassed = isSameValue && isTestOperation;
   const handleUpdateAndCancel = () => {
     if (currentPatch && currentPatch.op !== "test") {
       updateJsonData(currentPatch);
@@ -68,7 +69,7 @@ const JsonPair = (props: {
         />
       </div>
 
-      {testPassed && <TestTag result={testPassed} />}
+      {isTestOperation && <TestTag result={testPassed} />}
 
       {!newPair &&
         currentPatch?.op === "replace" &&
