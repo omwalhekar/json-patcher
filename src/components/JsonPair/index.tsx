@@ -3,8 +3,6 @@ import JsonWrapper from "../JsonWrapper";
 import { areEqual, getValueType } from "../../helpers/common";
 import ArrayWrapper from "../ArrayWrapper";
 
-
-
 const JsonPair = (props: {
   basePath: string;
   level: number;
@@ -34,7 +32,7 @@ const JsonPair = (props: {
   const testPassed = isSameValue && currentPatch?.op === "test";
 
   return (
-    <div className={`json-pair  ${testPassed ? "test-passed": currentPatch?.op === "test"? "test-failed":""}`}>
+    <div className={`json-pair`}>
       <span
         className={`json-key 
         ${currentPatch?.op === "add"  && !currentPatch?.cancelled ? "to-be-added" : ""} 
@@ -102,6 +100,16 @@ const JsonPair = (props: {
           <span>{JSON.stringify(value)}</span>
         )}
       </div>
+
+      
+      {
+          testPassed ? <div className="test-passed">
+            <span>Passed</span>
+            </div> : currentPatch?.op === "test"?
+            <div className="test-failed">
+            <span>Failed</span>
+            </div> : <></>
+        }
 
       {!newPair &&
         currentPatch?.op === "replace" &&

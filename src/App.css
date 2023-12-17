@@ -1,5 +1,6 @@
 body{
     font-family: Poppins, Arial;
+    overflow-y: hidden;
 }
 .App{
     display: flex;
@@ -32,19 +33,24 @@ body{
 .editor{
     min-height: 100vh;
 }
-
+.mantine-JsonInput-input,
+.visualizer{
+    height: 95vh;
+}
 .mantine-JsonInput-input{
-    height: 90vh;
+    padding: 20px 0;
 }
 
 .visualizer{
     padding-left: 40px;
+    overflow-y: scroll;
 }
 .editor{
     padding-left: 10px;
     padding-right: 20px;
     border-right: 1px solid #e0e0e0;
     background: #f4f4f4;
+    
 }
 .mantine-JsonInput-input{
     width: 100%;
@@ -72,8 +78,7 @@ body{
 }
 
 .to-be-deleted,
-.to-be-replaced,
-.test-failed{
+.to-be-replaced{
     background: #FA7070;
     cursor: pointer;
 }
@@ -83,11 +88,30 @@ body{
 }
 
 .to-be-added,
-.replaced-value, 
-.test-passed{
+.replaced-value{
     background: #9ADE7B;
     cursor: pointer;
 }
+.test-passed,
+.test-failed{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: initial;
+    pointer-events: none;
+    padding: 1px 8px;
+    border-radius: 3px;
+    color: #fff;
+}
+.test-failed{
+    background: #FA7070;
+}
+.test-passed{
+    background: #9ADE7B;
+}
+
 .replaced-value{
     height: max-content;
 }

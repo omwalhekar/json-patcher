@@ -1,8 +1,5 @@
 import { find, findLast } from "lodash";
-import JsonPair from "../JsonPair";
 import { applyPatchToArray, areEqual, getValueType } from "../../helpers/common";
-import { CheckIcon } from "@mantine/core";
-import CrossIcon from "../Icons/CrossIcon";
 import JsonWrapper from "../JsonWrapper";
 
 function countSlashes(path: string) {
@@ -91,8 +88,7 @@ const ArrayPair = (props: {
     const currentValueType = getValueType(arrayItemValue);
     const newValueType = getValueType(currentPatch?.value);
 
-    return <div className={`array-item-pair 
-         ${testPassed ? "test-passed": currentPatch?.op === "test"? "test-failed":""}
+    return <div className={`array-item-pair
         ${newPair && currentPatch?.op === "add" && !currentPatch?.cancelled   ? "to-be-added":""} 
         ${currentPatch?.op === "delete"
             && !currentPatch?.cancelled  
@@ -122,10 +118,18 @@ const ArrayPair = (props: {
               <JsonWrapper 
                 json={arrayItemValue} 
                 jsonPatch={jsonPatch} 
-                path={`${path}`} 
+                path={path} 
                 level={level + 1} 
                 updateJsonData={updateJsonData} 
                 markPatchAsCancelled={markPatchAsCancelled} /> :
+                currentValueType === "Array"? 
+              <ArrayWrapper 
+                array={arrayItemValue} 
+                jsonPatch={jsonPatch} 
+                path={path} 
+                level={level + 1} 
+                updateJsonData={updateJsonData} 
+                markPatchAsCancelled={markPatchAsCancelled} />:
               
               <>"{arrayItemValue}"</>
           }
@@ -133,7 +137,12 @@ const ArrayPair = (props: {
         </div>
 
         {
-          testPassed ? <><CheckIcon />Pass</> : currentPatch?.op === "test"? <CrossIcon /> : <></>
+          testPassed ? <div className="test-passed">
+            <span>Passed</span>
+            </div> : currentPatch?.op === "test"?
+            <div className="test-failed">
+            <span>Failed</span>
+            </div> : <></>
         }
         
         {!isSameValue && !currentPatch?.cancelled && currentPatch?.op === "replace" && 
@@ -142,7 +151,27 @@ const ArrayPair = (props: {
                 updateJsonData(currentPatch)
                 markPatchAsCancelled(currentPatch)
               }
-            }}>"{currentPatch?.value}"</div>
+            }}> {
+              newValueType === "Object"? 
+                <JsonWrapper 
+                  json={currentPatch?.value} 
+                  jsonPatch={jsonPatch} 
+                  path={path} 
+                  level={level + 1} 
+                  updateJsonData={updateJsonData} 
+                  markPatchAsCancelled={markPatchAsCancelled} 
+                  /> :
+                  newValueType === "Array"? 
+                <ArrayWrapper 
+                  array={currentPatch?.value} 
+                  jsonPatch={jsonPatch} 
+                  path={path} 
+                  level={level + 1} 
+                  updateJsonData={updateJsonData} 
+                  markPatchAsCancelled={markPatchAsCancelled} />:
+                
+                <>"{currentPatch?.value}"</>
+            }</div>
         }
     </div>
 
