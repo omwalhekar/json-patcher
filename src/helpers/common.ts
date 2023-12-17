@@ -1,10 +1,10 @@
-import isEqual  from "lodash/isEqual"
+import isEqual from "lodash/isEqual";
 
-export const areEqual = (lhs:any, rhs:any) => {
-    return isEqual(lhs, rhs);
-}
+export const areEqual = (lhs: any, rhs: any) => {
+  return isEqual(lhs, rhs);
+};
 
-export const applyPatch = (originalObject:any, patch?:any) =>  {
+export const applyPatch = (originalObject: any, patch?: any) => {
   if (!patch) return originalObject;
 
   const { op, path, value } = patch;
@@ -14,8 +14,11 @@ export const applyPatch = (originalObject:any, patch?:any) =>  {
     let currentObj = obj;
     for (let i = 0; i < pathSegments.length - 1; i++) {
       const segment = pathSegments[i];
-  
-      if (Array.isArray(currentObj[segment]) && !Number.isNaN(Number(pathSegments[i + 1]))) {
+
+      if (
+        Array.isArray(currentObj[segment]) &&
+        !Number.isNaN(Number(pathSegments[i + 1]))
+      ) {
         // If the current segment is an array and the next segment is a number, update the array element
         const index = Number(pathSegments[i + 1]);
         if (currentObj[segment][index] !== undefined) {
@@ -34,10 +37,13 @@ export const applyPatch = (originalObject:any, patch?:any) =>  {
         currentObj = currentObj[segment];
       }
     }
-  
+
     // If the last segment is an array and the path ends with an index, update the array element
     const lastSegment = pathSegments[pathSegments.length - 1];
-    if (Array.isArray(currentObj[lastSegment]) && !Number.isNaN(Number(lastSegment))) {
+    if (
+      Array.isArray(currentObj[lastSegment]) &&
+      !Number.isNaN(Number(lastSegment))
+    ) {
       const index = Number(lastSegment);
       if (currentObj[lastSegment][index] !== undefined) {
         currentObj[lastSegment][index] = newValue;
@@ -57,7 +63,10 @@ export const applyPatch = (originalObject:any, patch?:any) =>  {
     for (let i = 0; i < pathSegments.length - 1; i++) {
       const segment = pathSegments[i];
 
-      if (Array.isArray(currentObj[segment]) && !Number.isNaN(Number(pathSegments[i + 1]))) {
+      if (
+        Array.isArray(currentObj[segment]) &&
+        !Number.isNaN(Number(pathSegments[i + 1]))
+      ) {
         // If the current segment is an array and the next segment is a number
         const index = Number(pathSegments[i + 1]);
         if (currentObj[segment][index] !== undefined) {
@@ -66,7 +75,9 @@ export const applyPatch = (originalObject:any, patch?:any) =>  {
           return;
         } else {
           // Handle the case when the index is not found in the array
-          console.warn(`Index ${index} not found in array. No deletion performed.`);
+          console.warn(
+            `Index ${index} not found in array. No deletion performed.`,
+          );
           return;
         }
       }
@@ -76,29 +87,29 @@ export const applyPatch = (originalObject:any, patch?:any) =>  {
     delete currentObj[pathSegments[pathSegments.length - 1]];
   };
 
-  const pathSegments = path.split('/').filter((segment: any) => segment !== '');
+  const pathSegments = path.split("/").filter((segment: any) => segment !== "");
 
   switch (op) {
-    case 'replace':
-    case 'add':
+    case "replace":
+    case "add":
       updateValueAtPath(originalObject, pathSegments, value);
       break;
 
-    case 'delete':
+    case "delete":
       deleteValueAtPath(originalObject, pathSegments);
       break;
 
     default:
-      throw new Error('Invalid operation');
+      throw new Error("Invalid operation");
   }
 
-  console.log({originalObject})
+  console.log({ originalObject });
   return originalObject;
-  }
+};
 
- export const isValidInput = (input:any) => {
-   // Check if input is an array
-   if (!Array.isArray(input)) {
+export const isValidInput = (input: any) => {
+  // Check if input is an array
+  if (!Array.isArray(input)) {
     return "Input must be an array";
   }
 
@@ -108,7 +119,7 @@ export const applyPatch = (originalObject:any, patch?:any) =>  {
   // Check each object in the array
   for (const obj of input) {
     // Check if the object has the required keys: op, path
-    if (!obj.hasOwnProperty('op') || !obj.hasOwnProperty('path')) {
+    if (!obj.hasOwnProperty("op") || !obj.hasOwnProperty("path")) {
       return "Each object must have 'op' and 'path' properties";
     }
 
@@ -118,12 +129,12 @@ export const applyPatch = (originalObject:any, patch?:any) =>  {
     }
 
     // Check if op is "delete" and value is not mandatory
-    if (obj.op === 'delete') {
+    if (obj.op === "delete") {
       // Allow "value" to be present, but ignore its value for "delete"
       continue;
     } else {
       // For any other operation, value is mandatory
-      if (!obj.hasOwnProperty('value')) {
+      if (!obj.hasOwnProperty("value")) {
         return "'value' is required for operations other than 'delete'";
       }
     }
@@ -132,8 +143,10 @@ export const applyPatch = (originalObject:any, patch?:any) =>  {
 
     // Example: Check if value is a string, number, array, or object
     if (
-      (typeof obj.value !== 'string' && typeof obj.value !== 'number' &&
-      !Array.isArray(obj.value) && typeof obj.value !== 'object')
+      typeof obj.value !== "string" &&
+      typeof obj.value !== "number" &&
+      !Array.isArray(obj.value) &&
+      typeof obj.value !== "object"
     ) {
       return "'value' must be a string, number, array, or object";
     }
@@ -141,25 +154,25 @@ export const applyPatch = (originalObject:any, patch?:any) =>  {
 
   // If all checks pass, there is no error
   return "";
-  }
+};
 
-  export const getValueType = (obj: any) => {
-    if (Array.isArray(obj)) return "Array";
-    if (typeof obj === "object" && obj !== null) return "Object";
-    return "String";
-  }
+export const getValueType = (obj: any) => {
+  if (Array.isArray(obj)) return "Array";
+  if (typeof obj === "object" && obj !== null) return "Object";
+  return "String";
+};
 
-  export function applyPatchToArray(originalArray:any, patchArray:any) {
-    const resultArray = [...originalArray];
-  
-    patchArray.forEach(({ index, value }:any) => {
-      resultArray.splice(index, 0, value);
-    });
-  
-    return resultArray;
-  }
+export function applyPatchToArray(originalArray: any, patchArray: any) {
+  const resultArray = [...originalArray];
 
-  export const checkIfPathIsArray = (path:string) => {
-    const regex = /\/\d+$/;
-    return regex.test(path);
-  } 
+  patchArray.forEach(({ index, value }: any) => {
+    resultArray.splice(index, 0, value);
+  });
+
+  return resultArray;
+}
+
+export const checkIfPathIsArray = (path: string) => {
+  const regex = /\/\d+$/;
+  return regex.test(path);
+};

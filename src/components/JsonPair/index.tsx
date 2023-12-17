@@ -29,7 +29,7 @@ const JsonPair = (props: {
   const currentValueType = getValueType(value);
   const newValueType = getValueType(currentPatch?.value);
   const isSameValue = areEqual(value, currentPatch?.value);
- 
+
   const isAddOperation = currentPatch?.op === "add" && !currentPatch?.cancelled;
   const isDeleteOperation = currentPatch?.op === "delete";
   const isTestOperation = currentPatch?.op === "test";

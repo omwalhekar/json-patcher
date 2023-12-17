@@ -5,19 +5,25 @@ import DataContext from "../../context/DataContext";
 
 const countSlashes = (path: string) => path.split("/").filter(Boolean).length;
 
-const JsonWrapper = (props: {
-  json: any;
-  path: string;
-  level: number;
-}) => {
-  const { jsonPatch, updateJsonData, markPatchAsCancelled } = useContext(DataContext);
+const JsonWrapper = (props: { json: any; path: string; level: number }) => {
+  const { jsonPatch, updateJsonData, markPatchAsCancelled } =
+    useContext(DataContext);
   const { json, level, path } = props;
   const keys = Object.keys(json);
   const isPathAnArray = checkIfPathIsArray;
 
   const keysToAdd = jsonPatch
-    .filter((patch: any) => countSlashes(patch?.path) === level && patch.op === "add" && !patch.cancelled && !isPathAnArray(patch.path))
-    .map((patch: any) => ({ ...patch, keyName: patch.path.split("/").filter(Boolean).pop() || '' }));
+    .filter(
+      (patch: any) =>
+        countSlashes(patch?.path) === level &&
+        patch.op === "add" &&
+        !patch.cancelled &&
+        !isPathAnArray(patch.path),
+    )
+    .map((patch: any) => ({
+      ...patch,
+      keyName: patch.path.split("/").filter(Boolean).pop() || "",
+    }));
 
   return (
     <div className="json-wrapper">
