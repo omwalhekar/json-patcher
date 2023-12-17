@@ -2,11 +2,12 @@ import findLast from "lodash/findLast";
 import { areEqual, getValueType } from "../../helpers/common";
 import TestTag from "../TestTag";
 import ValueWrapper from "../ValueWrapper";
+import { OpType } from "../../interfaces/common";
 
 const JsonPair = (props: {
   basePath: string;
   level: number;
-  keyName: string;
+  keyName?: string;
   value: any;
   jsonPatch: any;
   newPair?: boolean;
@@ -30,15 +31,15 @@ const JsonPair = (props: {
   const newValueType = getValueType(currentPatch?.value);
   const isSameValue = areEqual(value, currentPatch?.value);
 
-  const isAddOperation = currentPatch?.op === "add" && !currentPatch?.cancelled;
-  const isDeleteOperation = currentPatch?.op === "delete";
-  const isTestOperation = currentPatch?.op === "test";
+  const isAddOperation = currentPatch?.op === OpType.Add && !currentPatch?.cancelled;
+  const isDeleteOperation = currentPatch?.op === OpType.Remove;
+  const isTestOperation = currentPatch?.op === OpType.Test;
   const isReplaceOperation =
-    !isSameValue && !currentPatch?.cancelled && currentPatch?.op === "replace";
+    !isSameValue && !currentPatch?.cancelled && currentPatch?.op === OpType.Replace;
 
   const testPassed = isSameValue && isTestOperation;
   const handleUpdateAndCancel = () => {
-    if (currentPatch && currentPatch.op !== "test") {
+    if (currentPatch && currentPatch.op !== OpType.Test) {
       updateJsonData(currentPatch);
       markPatchAsCancelled(currentPatch);
     }
@@ -72,7 +73,7 @@ const JsonPair = (props: {
       {isTestOperation && <TestTag result={testPassed} />}
 
       {!newPair &&
-        currentPatch?.op === "replace" &&
+        currentPatch?.op === OpType.Replace &&
         !currentPatch?.cancelled &&
         !isSameValue && (
           <span

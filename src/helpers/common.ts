@@ -1,4 +1,5 @@
 import isEqual from "lodash/isEqual";
+import { OpType } from "../interfaces/common";
 
 export const areEqual = (lhs: any, rhs: any) => {
   return isEqual(lhs, rhs);
@@ -90,12 +91,12 @@ export const applyPatch = (originalObject: any, patch?: any) => {
   const pathSegments = path.split("/").filter((segment: any) => segment !== "");
 
   switch (op) {
-    case "replace":
-    case "add":
+    case OpType.Replace:
+    case OpType.Add:
       updateValueAtPath(originalObject, pathSegments, value);
       break;
 
-    case "delete":
+    case OpType.Remove:
       deleteValueAtPath(originalObject, pathSegments);
       break;
 
@@ -114,7 +115,7 @@ export const isValidInput = (input: any) => {
   }
 
   // Valid operation types
-  const validOps = ["delete", "replace", "add", "test"];
+  const validOps = [OpType.Remove, OpType.Replace, OpType.Add, OpType.Test];
 
   // Check each object in the array
   for (const obj of input) {
@@ -129,7 +130,7 @@ export const isValidInput = (input: any) => {
     }
 
     // Check if op is "delete" and value is not mandatory
-    if (obj.op === "delete") {
+    if (obj.op === OpType.Remove) {
       // Allow "value" to be present, but ignore its value for "delete"
       continue;
     } else {

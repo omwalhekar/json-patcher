@@ -4,6 +4,7 @@ import { applyPatch, isValidInput } from "./helpers/common";
 import set from "lodash/set";
 import { JsonInput, MantineProvider } from "@mantine/core";
 import DataContext from "./context/DataContext";
+import { IPatch, OpType } from "./interfaces/common";
 import "./App.css";
 
 function App() {
@@ -28,89 +29,89 @@ function App() {
     array: [["apple", "orange"]],
   };
 
-  const jsonPatch = [
+  const jsonPatch: IPatch[] = [
     {
-      op: "test",
+      op: OpType.Test,
       path: "/slug",
       value: "slug",
     },
     {
-      op: "test",
+      op: OpType.Test,
       path: "/name",
       value: "Diya Foundation",
     },
     {
-      op: "replace",
+      op: OpType.Replace,
       path: "/tags/5",
       value: "spbm18",
     },
     {
-      op: "replace",
+      op: OpType.Replace,
       path: "/tags/4",
       value: "bengaluru10k-18",
     },
     {
-      op: "replace",
+      op: OpType.Replace,
       path: "/tags/3",
       value: "lfc18-wow2",
     },
     {
-      op: "replace",
+      op: OpType.Replace,
       path: "/tags/2",
       value: "tcs10k-18",
     },
     {
-      op: "replace",
+      op: OpType.Replace,
       path: "/tags/1",
       value: "lfc18-cbp",
     },
     {
-      op: "test",
+      op: OpType.Test,
       path: "/tags/0",
       value: "hoh18",
     },
     {
-      op: "add",
+      op: OpType.Add,
       path: "/tags/6",
       value: "housie18",
     },
     {
-      op: "add",
+      op: OpType.Add,
       path: "/tags/7",
       value: "hoh18",
     },
     {
-      op: "add",
+      op: OpType.Add,
       path: "/tags/8",
       value: "lfc19",
     },
     {
-      op: "add",
+      op: OpType.Add,
       path: "/tags/9",
       value: "tbpp",
     },
     {
-      op: "add",
+      op: OpType.Add,
       path: "/tags/10",
       value: "housie19",
     },
     {
-      op: "add",
+      op: OpType.Add,
       path: "/tags/11",
       value: "gfc2020",
     },
     {
-      op: "replace",
+      op: OpType.Replace,
       path: "/external_profiles/1/uri",
       value: "https://www.facebook.com/pages/DIYA-Foundation/",
     },
     {
-      op: "replace",
+      op: OpType.Replace,
       path: "/external_profiles/1/label",
       value: "Facebook",
     },
     {
-      op: "add",
+      op: OpType.Add,
       path: "/external_profiles/2",
       value: {
         label: "Twitter",
@@ -118,13 +119,13 @@ function App() {
       },
     },
     {
-      op: "add",
+      op: OpType.Add,
       path: "/official_name",
       value: "Diya Foundation",
     },
   ];
   const [jsonData, setJsonData] = useState<any>(json);
-  const [patches, setPatches] = useState<any>(jsonPatch);
+  const [patches, setPatches] = useState<IPatch[]>(jsonPatch);
 
   const [jsonString, setJsonString] = useState(
     JSON.stringify(patches, null, 2),

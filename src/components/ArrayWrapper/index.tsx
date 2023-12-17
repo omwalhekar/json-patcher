@@ -8,6 +8,7 @@ import TestTag from "../TestTag";
 import ValueWrapper from "../ValueWrapper";
 import { useContext } from "react";
 import DataContext from "../../context/DataContext";
+import { OpType } from "../../interfaces/common";
 
 function countSlashes(path: string) {
   // Split the path string by "/"
@@ -31,10 +32,10 @@ const ArrayWrapper = (props: { array: any; path: string; level: number }) => {
     if (regexPattern.test(patch.path) && !patch?.cancelled) {
       const pathParts = patch.path.split("/");
       const pathIndex = pathParts[pathParts.length - 1];
-      if (patch.op === "add") {
+      if (patch.op === OpType.Add) {
         itemsToAdd.push({ ...patch, index: pathIndex });
       }
-      if (patch.op === "replace") {
+      if (patch.op === OpType.Replace) {
         itemsToReplace.push({ ...patch, index: pathIndex });
       }
     }
@@ -93,9 +94,9 @@ const ArrayPair = (props: {
   } = props;
   const currentPatch =
     findLast(jsonPatch, { path }) ||
-    findLast(jsonPatch, { op: "add", value: arrayItemValue });
+    findLast(jsonPatch, { op: OpType.Add, value: arrayItemValue });
   const isSameValue = areEqual(arrayItemValue, currentPatch?.value);
-  const testPassed = isSameValue && currentPatch?.op === "test";
+  const testPassed = isSameValue && currentPatch?.op === OpType.Test;
   const currentValueType = getValueType(arrayItemValue);
   const newValueType = getValueType(currentPatch?.value);
 
@@ -103,19 +104,19 @@ const ArrayPair = (props: {
     <div
       className={`array-item-pair
         ${
-          newPair && currentPatch?.op === "add" && !currentPatch?.cancelled
+          newPair && currentPatch?.op === OpType.Add && !currentPatch?.cancelled
             ? "to-be-added"
             : ""
         } 
         ${
-          currentPatch?.op === "delete" &&
+          currentPatch?.op === OpType.Remove &&
           !currentPatch?.cancelled &&
           !isSameValue
             ? "to-be-deleted"
             : ""
         }`}
       onClick={() => {
-        if (currentPatch?.op === "add" && !currentPatch?.cancelled) {
+        if (currentPatch?.op === OpType.Add && !currentPatch?.cancelled) {
           updateJsonData(currentPatch);
           markPatchAsCancelled(currentPatch);
         }
@@ -125,14 +126,14 @@ const ArrayPair = (props: {
       <div
         className={`array-value 
           ${
-            (currentPatch?.op === "replace" || replacePair) &&
+            (currentPatch?.op === OpType.Replace || replacePair) &&
             !currentPatch?.cancelled &&
             !isSameValue
               ? "to-be-replaced"
               : ""
           }`}
         onClick={() => {
-          if (!currentPatch?.cancelled && currentPatch?.op === "replace") {
+          if (!currentPatch?.cancelled && currentPatch?.op === OpType.Replace) {
             updateJsonData();
             markPatchAsCancelled(currentPatch);
           }
@@ -146,11 +147,11 @@ const ArrayPair = (props: {
         />
       </div>
 
-      {currentPatch?.op === "test" && <TestTag result={testPassed} />}
+      {currentPatch?.op === OpType.Test && <TestTag result={testPassed} />}
 
       {!isSameValue &&
         !currentPatch?.cancelled &&
-        currentPatch?.op === "replace" && (
+        currentPatch?.op === OpType.Replace && (
           <div
             className="to-be-added"
             onClick={() => {

@@ -1,13 +1,14 @@
 import { createContext } from "react";
+import { IPatch } from "../interfaces/common";
 
 interface IDataContext {
-  jsonPatch: any;
+  jsonPatch: IPatch[];
   updateJsonData: any;
   markPatchAsCancelled: any;
 }
 
 const DataContext = createContext<IDataContext>({
-  jsonPatch: {},
+  jsonPatch: [],
   updateJsonData: null,
   markPatchAsCancelled: null,
 });

@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { checkIfPathIsArray, getValueType } from "../../helpers/common";
 import JsonPair from "../JsonPair";
 import DataContext from "../../context/DataContext";
+import { IPatch, OpType } from "../../interfaces/common";
 
 const countSlashes = (path: string) => path.split("/").filter(Boolean).length;
 
@@ -14,13 +15,13 @@ const JsonWrapper = (props: { json: any; path: string; level: number }) => {
 
   const keysToAdd = jsonPatch
     .filter(
-      (patch: any) =>
+      (patch: IPatch) =>
         countSlashes(patch?.path) === level &&
-        patch.op === "add" &&
+        patch.op === OpType.Add &&
         !patch.cancelled &&
         !isPathAnArray(patch.path),
     )
-    .map((patch: any) => ({
+    .map((patch: IPatch) => ({
       ...patch,
       keyName: patch.path.split("/").filter(Boolean).pop() || "",
     }));
@@ -41,12 +42,12 @@ const JsonWrapper = (props: { json: any; path: string; level: number }) => {
             markPatchAsCancelled={markPatchAsCancelled}
           />
         ))}
-        {keysToAdd.map((patch: any) => (
+        {keysToAdd.map((patch: IPatch) => (
           <JsonPair
             key={patch.keyName}
             basePath={path}
             level={level}
-            keyName={patch.keyName}
+            keyName={patch?.keyName}
             value={patch.value}
             jsonPatch={jsonPatch}
             newPair={true}
