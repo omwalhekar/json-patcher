@@ -8,7 +8,7 @@ export enum OpType {
 export  interface IPatch {
     op: OpType;
     path: string;
-    value: any;
+    value?: any;
     cancelled?:boolean
     keyName?:string
   }

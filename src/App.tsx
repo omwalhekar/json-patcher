@@ -41,6 +41,10 @@ function App() {
       value: "Diya Foundation",
     },
     {
+      op: OpType.Remove,
+      path: "/created_at"
+    },
+    {
       op: OpType.Replace,
       path: "/tags/5",
       value: "spbm18",
