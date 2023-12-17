@@ -35,6 +35,7 @@ const JsonWrapper = (props: {
       return { ...patch, keyName };
     });
 
+ 
   return (
     <div className="json-wrapper">
       <span className="enclosing-bracket">{"{"}</span>

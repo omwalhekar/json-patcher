@@ -1,6 +1,9 @@
 import { find, findLast } from "lodash";
 import JsonPair from "../JsonPair";
 import { applyPatchToArray, areEqual, getValueType } from "../../helpers/common";
+import { CheckIcon } from "@mantine/core";
+import CrossIcon from "../Icons/CrossIcon";
+import JsonWrapper from "../JsonWrapper";
 
 function countSlashes(path: string) {
   // Split the path string by "/"
@@ -51,6 +54,7 @@ const ArrayWrapper = (props: {
                     <ArrayPair 
                       index={index} 
                       path={`${path}/${index}`} 
+                      level={level}
                       arrayItemValue={item} 
                       jsonPatch={jsonPatch} 
                       newPair={Boolean(find(itemsToAdd, {value: item}))}
@@ -74,25 +78,28 @@ const ArrayPair = (props: {
     arrayItemValue:any,
     path:string, 
     jsonPatch:any, 
+    level: number,
     newPair?:boolean, 
     replacePair?:boolean, 
     updateJsonData:any
     markPatchAsCancelled:any
   }) => {
-    const {index, arrayItemValue, path, jsonPatch, newPair, replacePair, updateJsonData, markPatchAsCancelled } = props;
-
+    const {index, arrayItemValue, path, level, jsonPatch, newPair, replacePair, updateJsonData, markPatchAsCancelled } = props;
     const currentPatch = findLast(jsonPatch, { path }) || findLast(jsonPatch, {op: "add", value: arrayItemValue});
     const isSameValue = areEqual(arrayItemValue, currentPatch?.value);
-  
+    const testPassed = isSameValue && currentPatch?.op === "test";
+    const currentValueType = getValueType(arrayItemValue);
+    const newValueType = getValueType(currentPatch?.value);
+
     return <div className={`array-item-pair 
-        ${newPair && !currentPatch?.cancelled   ? "to-be-added":""} 
+         ${testPassed ? "test-passed": currentPatch?.op === "test"? "test-failed":""}
+        ${newPair && currentPatch?.op === "add" && !currentPatch?.cancelled   ? "to-be-added":""} 
         ${currentPatch?.op === "delete"
             && !currentPatch?.cancelled  
             && !isSameValue ? "to-be-deleted" : ""}`}
             onClick={() => {
               if(currentPatch?.op === "add" && !currentPatch?.cancelled)
               { 
-                console.log({thismaybe: currentPatch})
                updateJsonData(currentPatch)
                markPatchAsCancelled(currentPatch)
               }
@@ -102,22 +109,36 @@ const ArrayPair = (props: {
         <div className="array-index">"{index}":</div>
         <div className={`array-value 
           ${(currentPatch?.op === "replace" || replacePair) && 
-          !isSameValue? "to-be-replaced":""}`}
+          !currentPatch?.cancelled && !isSameValue? "to-be-replaced":""}`}
           onClick={() => {
-           if(!currentPatch?.cancelled && !newPair)
+           if(!currentPatch?.cancelled && currentPatch?.op === "replace")
            { 
-            console.log({thisssss: currentPatch})
-            updateJsonData(currentPatch)
+            updateJsonData()
             markPatchAsCancelled(currentPatch)}
           }}
-          >
-            "{arrayItemValue}"
+          > 
+          {
+            currentValueType === "Object"? 
+              <JsonWrapper 
+                json={arrayItemValue} 
+                jsonPatch={jsonPatch} 
+                path={`${path}`} 
+                level={level + 1} 
+                updateJsonData={updateJsonData} 
+                markPatchAsCancelled={markPatchAsCancelled} /> :
+              
+              <>"{arrayItemValue}"</>
+          }
+            
         </div>
+
+        {
+          testPassed ? <><CheckIcon />Pass</> : currentPatch?.op === "test"? <CrossIcon /> : <></>
+        }
         
         {!isSameValue && !currentPatch?.cancelled && currentPatch?.op === "replace" && 
             <div className="to-be-added" onClick={() => {
               if((!currentPatch?.cancelled || newPair) && !currentPatch?.cancelled){
-                console.log({thiscanbetoo: currentPatch})
                 updateJsonData(currentPatch)
                 markPatchAsCancelled(currentPatch)
               }

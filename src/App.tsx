@@ -7,31 +7,40 @@ import { JsonInput, MantineProvider  } from '@mantine/core';
 
 function App() {
   const json = {
-    name: "John Doe",
-    city: "New York",
-    contact: {
-      email: "johndoe@gmail.com",
-      phone: "8899008899"
-    },
-    interests: ["Dancing", "Painting"]
-  };
+    "external_profiles": [{
+    "label": "Website",
+    "uri": "http://www.diyafoundation-india.org/Site/index.html"
+    }, {
+    "label": "Youtube",
+    "uri": "http://www.youtube.com/watch?v=DezbmReWMf0"
+    }],
+    };
 
   const jsonPatch = [
     {
-      op: "replace",
-      path: "/name",
-      value: "Sam Doe",
+        "op": "replace",
+        "path": "/external_profiles/1/uri",
+        "value": "https://www.facebook.com/pages/DIYA-Foundation/"
     },
     {
-      op: "delete",
-      path: "/contact/phone"
+        "op": "replace",
+        "path": "/external_profiles/1/label",
+        "value": "Facebook"
     },
     {
-      op: "add",
-      path: "/interests/5",
-      value: "Swimming"
+        "op": "add",
+        "path": "/external_profiles/2",
+        "value": {
+            "label": "Youtube",
+            "uri": "http://www.youtube.com/watch?v=DezbmReWMf0"
+        }
+    },
+    {
+        "op": "add",
+        "path": "/official_name",
+        "value": "Diya Foundation"
     }
-  ];
+];
   const [jsonData, setJsonData] = useState<any>(json);
   const [patches, setPatches] = useState<any>(jsonPatch);
 

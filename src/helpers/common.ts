@@ -103,7 +103,7 @@ export const applyPatch = (originalObject:any, patch?:any) =>  {
   }
 
   // Valid operation types
-  const validOps = ["delete", "replace", "add"];
+  const validOps = ["delete", "replace", "add", "test"];
 
   // Check each object in the array
   for (const obj of input) {

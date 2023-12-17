@@ -31,9 +31,10 @@ const JsonPair = (props: {
   const currentValueType = getValueType(value);
   const newValueType = getValueType(currentPatch?.value);
   const isSameValue = areEqual(value, currentPatch?.value);
+  const testPassed = isSameValue && currentPatch?.op === "test";
 
   return (
-    <div className={`json-pair`}>
+    <div className={`json-pair  ${testPassed ? "test-passed": currentPatch?.op === "test"? "test-failed":""}`}>
       <span
         className={`json-key 
         ${currentPatch?.op === "add"  && !currentPatch?.cancelled ? "to-be-added" : ""} 
@@ -47,7 +48,7 @@ const JsonPair = (props: {
           markPatchAsCancelled(currentPatch);
         }}
       >
-        "{keyName}":
+        "{keyName}" :
       </span>
 
       <div
@@ -58,6 +59,7 @@ const JsonPair = (props: {
             ? "to-be-replaced"
             : ""
         }
+       
                 ${currentPatch?.op === "add" && !currentPatch?.cancelled  ? "to-be-added" : ""} 
                 ${
                   !isSameValue &&
@@ -118,7 +120,16 @@ const JsonPair = (props: {
                 updateJsonData={updateJsonData}
                 markPatchAsCancelled={markPatchAsCancelled}
               />
-            ) : (
+            ) : newValueType === "Array"? 
+            <ArrayWrapper 
+              array={currentPatch?.value} 
+              jsonPatch={jsonPatch} 
+              level={level + 1}
+              path={`${basePath}/${keyName}`}
+              updateJsonData={updateJsonData}
+              markPatchAsCancelled={markPatchAsCancelled}
+            /> 
+          : (
               <span onClick={() => updateJsonData(currentPatch)}>
                 {JSON.stringify(currentPatch?.value)}
               </span>
