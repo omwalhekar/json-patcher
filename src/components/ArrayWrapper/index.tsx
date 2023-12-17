@@ -1,6 +1,7 @@
 import { find, findLast } from "lodash";
 import { applyPatchToArray, areEqual, getValueType } from "../../helpers/common";
-import JsonWrapper from "../JsonWrapper";
+import TestTag from "../TestTag";
+import ValueWrapper from "../ValueWrapper";
 
 function countSlashes(path: string) {
   // Split the path string by "/"
@@ -113,37 +114,21 @@ const ArrayPair = (props: {
             markPatchAsCancelled(currentPatch)}
           }}
           > 
-          {
-            currentValueType === "Object"? 
-              <JsonWrapper 
-                json={arrayItemValue} 
-                jsonPatch={jsonPatch} 
-                path={path} 
-                level={level + 1} 
-                updateJsonData={updateJsonData} 
-                markPatchAsCancelled={markPatchAsCancelled} /> :
-                currentValueType === "Array"? 
-              <ArrayWrapper 
-                array={arrayItemValue} 
-                jsonPatch={jsonPatch} 
-                path={path} 
-                level={level + 1} 
-                updateJsonData={updateJsonData} 
-                markPatchAsCancelled={markPatchAsCancelled} />:
-              
-              <>"{arrayItemValue}"</>
-          }
-            
+           <ValueWrapper 
+                valueType={currentValueType} 
+                value={arrayItemValue} 
+                path={path}
+                level={level + 1}
+                updateJsonData={updateJsonData}
+                jsonPatch={jsonPatch}
+                markPatchAsCancelled={markPatchAsCancelled}
+              />   
         </div>
 
-        {
-          testPassed ? <div className="test-passed">
-            <span>Passed</span>
-            </div> : currentPatch?.op === "test"?
-            <div className="test-failed">
-            <span>Failed</span>
-            </div> : <></>
-        }
+         
+      {
+         currentPatch?.op === "test" && <TestTag result={testPassed}/>
+      }
         
         {!isSameValue && !currentPatch?.cancelled && currentPatch?.op === "replace" && 
             <div className="to-be-added" onClick={() => {
@@ -151,29 +136,17 @@ const ArrayPair = (props: {
                 updateJsonData(currentPatch)
                 markPatchAsCancelled(currentPatch)
               }
-            }}> {
-              newValueType === "Object"? 
-                <JsonWrapper 
-                  json={currentPatch?.value} 
-                  jsonPatch={jsonPatch} 
-                  path={path} 
-                  level={level + 1} 
-                  updateJsonData={updateJsonData} 
-                  markPatchAsCancelled={markPatchAsCancelled} 
-                  /> :
-                  newValueType === "Array"? 
-                <ArrayWrapper 
-                  array={currentPatch?.value} 
-                  jsonPatch={jsonPatch} 
-                  path={path} 
-                  level={level + 1} 
-                  updateJsonData={updateJsonData} 
-                  markPatchAsCancelled={markPatchAsCancelled} />:
-                
-                <>"{currentPatch?.value}"</>
-            }</div>
+            }}> 
+            <ValueWrapper 
+                valueType={newValueType} 
+                value={currentPatch?.value} 
+                path={path}
+                level={level + 1}
+                updateJsonData={updateJsonData}
+                jsonPatch={jsonPatch}
+                markPatchAsCancelled={markPatchAsCancelled}
+              />
+            </div>
         }
     </div>
-
-
 }

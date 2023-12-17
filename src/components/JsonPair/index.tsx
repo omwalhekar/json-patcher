@@ -1,7 +1,7 @@
 import findLast from "lodash/findLast";
-import JsonWrapper from "../JsonWrapper";
 import { areEqual, getValueType } from "../../helpers/common";
-import ArrayWrapper from "../ArrayWrapper";
+import TestTag from "../TestTag";
+import ValueWrapper from "../ValueWrapper";
 
 const JsonPair = (props: {
   basePath: string;
@@ -77,39 +77,22 @@ const JsonPair = (props: {
           }
         }}
       >
-        {currentValueType === "Object" ? (
-          <JsonWrapper
-            json={value}
-            jsonPatch={jsonPatch}
-            level={level + 1}
-            path={`${basePath}/${keyName}`}
-            updateJsonData={updateJsonData}
-            markPatchAsCancelled={markPatchAsCancelled}
-          />
-        ) : 
-        currentValueType === "Array"? 
-          <ArrayWrapper 
-            array={value} 
-            jsonPatch={jsonPatch} 
-            level={level + 1}
-            path={`${basePath}/${keyName}`}
-            updateJsonData={updateJsonData}
-            markPatchAsCancelled={markPatchAsCancelled}
-          />
-           : ( 
-          <span>{JSON.stringify(value)}</span>
-        )}
+      
+        <ValueWrapper 
+                valueType={currentValueType} 
+                value={value} 
+                path={`${basePath}/${keyName}`}
+                level={level + 1}
+                updateJsonData={updateJsonData}
+                jsonPatch={jsonPatch}
+                markPatchAsCancelled={markPatchAsCancelled}
+              /> 
       </div>
 
       
       {
-          testPassed ? <div className="test-passed">
-            <span>Passed</span>
-            </div> : currentPatch?.op === "test"?
-            <div className="test-failed">
-            <span>Failed</span>
-            </div> : <></>
-        }
+         currentPatch?.op === "test" && <TestTag result={testPassed}/>
+      }
 
       {!newPair &&
         currentPatch?.op === "replace" &&
@@ -119,29 +102,15 @@ const JsonPair = (props: {
             className="replaced-value"
             onClick={() => updateJsonData(currentPatch)}
           >
-            {newValueType === "Object" ? (
-              <JsonWrapper
-                json={currentPatch?.value}
-                jsonPatch={jsonPatch}
-                level={level + 1}
+             <ValueWrapper 
+                valueType={newValueType} 
+                value={currentPatch?.value} 
                 path={`${basePath}/${keyName}`}
+                level={level + 1}
                 updateJsonData={updateJsonData}
+                jsonPatch={jsonPatch}
                 markPatchAsCancelled={markPatchAsCancelled}
-              />
-            ) : newValueType === "Array"? 
-            <ArrayWrapper 
-              array={currentPatch?.value} 
-              jsonPatch={jsonPatch} 
-              level={level + 1}
-              path={`${basePath}/${keyName}`}
-              updateJsonData={updateJsonData}
-              markPatchAsCancelled={markPatchAsCancelled}
-            /> 
-          : (
-              <span onClick={() => updateJsonData(currentPatch)}>
-                {JSON.stringify(currentPatch?.value)}
-              </span>
-            )}
+              /> 
           </span>
         )}
     </div>
