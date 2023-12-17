@@ -1,5 +1,12 @@
+:root {
+    --font-family: 'Poppins', Arial;
+    --primary-color: #0079FF;
+    --delete-color: #FA7070;
+    --add-color: #9ADE7B;
+}
+
 body{
-    font-family: Poppins, Arial;
+    font-family: var(--font-family);
     overflow-y: hidden;
 }
 .App{
@@ -18,11 +25,11 @@ body{
     left: 50%;
     transform: translate(calc(-50% - 10px), -40%);
     border: none;
-    font-family: Poppins, Arial;
+    font-family: var(--font-family);
     font-size: 18px;
     font-weight: 500;
     outline: none;
-    background-color: #0079FF;
+    background-color: var(--primary-color);
     color: #fff;
     border-radius: 7px;
     padding: 5px 10px;
@@ -57,7 +64,7 @@ body{
     border: none;
     outline: none;
     background: #f4f4f4;
-    font-family: Poppins, Arial;
+    font-family: var(--font-family);
     font-size: 16px;
     font-weight: 500;
 }
@@ -79,7 +86,7 @@ body{
 
 .to-be-deleted,
 .to-be-replaced{
-    background: #FA7070;
+    background: var(--delete-color);
     cursor: pointer;
 }
 
@@ -89,7 +96,7 @@ body{
 
 .to-be-added,
 .replaced-value{
-    background: #9ADE7B;
+    background: var(--add-color);
     cursor: pointer;
 }
 .test-passed,
@@ -106,10 +113,10 @@ body{
     color: #fff;
 }
 .test-failed{
-    background: #FA7070;
+    background: var(--delete-color);
 }
 .test-passed{
-    background: #9ADE7B;
+    background: var(--add-color);
 }
 
 .replaced-value{
