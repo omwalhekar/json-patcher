@@ -1,38 +1,142 @@
-.App {
-  text-align: center;
+:root {
+    --font-family: 'Poppins', Arial;
+    --primary-color: #0079FF;
+    --delete-color: #FA7070;
+    --add-color: #9ADE7B;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body{
+    font-family: var(--font-family);
+    overflow-y: hidden;
+}
+.App{
+    display: flex;
+    font-size: 16px;
+    font-weight: 500;
+}
+.visualizer,
+.editor{
+    width: 50%;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.visualize-btn{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(calc(-50% - 10px), -40%);
+    border: none;
+    font-family: var(--font-family);
+    font-size: 18px;
+    font-weight: 500;
+    outline: none;
+    background-color: var(--primary-color);
+    color: #fff;
+    border-radius: 7px;
+    padding: 5px 10px;
+    cursor: pointer;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.visualizer,
+.editor{
+    min-height: 100vh;
+}
+.mantine-JsonInput-input,
+.visualizer{
+    height: 95vh;
+}
+.mantine-JsonInput-input{
+    padding: 20px 0;
 }
 
-.App-link {
-  color: #61dafb;
+.visualizer{
+    padding-left: 40px;
+    overflow-y: scroll;
+}
+.editor{
+    padding-left: 10px;
+    padding-right: 20px;
+    border-right: 1px solid #e0e0e0;
+    background: #f4f4f4;
+    
+}
+.mantine-JsonInput-input{
+    width: 100%;
+    border: none;
+    outline: none;
+    background: #f4f4f4;
+    font-family: var(--font-family);
+    font-size: 16px;
+    font-weight: 500;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.json-wrapper{
+    display: inline;
+}
+.json-pair{
+    display: flex;
+    width: max-content;
+    margin: 3px 0;
+
+}
+.json-key,
+.json-value{
+    height: max-content;
+    padding: 0 5px;
+}
+
+.to-be-deleted,
+.to-be-replaced{
+    background: var(--delete-color);
+    cursor: pointer;
+}
+
+.to-be-replaced{
+    margin-right: 5px;
+}
+
+.to-be-added,
+.replaced-value{
+    background: var(--add-color);
+    cursor: pointer;
+}
+.test-passed,
+.test-failed{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: initial;
+    pointer-events: none;
+    padding: 1px 8px;
+    border-radius: 3px;
+    color: #fff;
+}
+.test-failed{
+    background: var(--delete-color);
+}
+.test-passed{
+    background: var(--add-color);
+}
+
+.replaced-value{
+    height: max-content;
+}
+
+.bracket-container{
+    margin-left: 20px;
+}
+.mantine-JsonInput-error{
+    color: red;
+    font-size: 14px;
+    font-weight: 500;
+}
+.array-item-pair{
+    display: flex;
+    gap:5px;
+    margin: 5px 0;
+}
+.array-item-pair,
+.array-value{
+    width: max-content;
 }
